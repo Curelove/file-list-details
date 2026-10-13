@@ -1,53 +1,45 @@
-# 文件列表备注
+# Explorer Details
 
-在 Obsidian 原生文件管理器中显示笔记的修改时间、笔记属性值或自定义备注。
+Explorer Details adds useful metadata to notes in the native File Explorer.
 
-插件直接增强 Obsidian 左侧原生文件列表，不会创建新的文件浏览页面，也不会替换 Obsidian 原有的文件管理器。
+It can show file modification times, note property values, custom text, or a combination of time and property values. The plugin enhances the existing file list and does not create a replacement file browser.
 
-## 功能
+Chinese name: 文件列表备注
 
-- 显示笔记文件的修改时间。
-- 显示笔记顶部属性区域中的属性值。
-- 显示自定义文字或备注。
-- 同时显示修改时间和指定属性值。
-- 可选择显示位置：
-  - 自动判断位置。
-  - 永远显示在标题右侧。
-  - 永远显示在标题下方。
-- 可按笔记属性筛选，只对符合条件的笔记显示内容。
-- 支持在自定义文字中插入笔记名称、路径、属性值和时间。
-- 使用 Obsidian 原生文件列表，不创建独立文件浏览页面。
+## Features
 
-## 隐私与数据
+- Show the file modification time for each note.
+- Show the value of a note property.
+- Show custom text or a reusable note label.
+- Show modification time and a property value together.
+- Place details automatically, always on the right, or always below the note title.
+- Move details below long note titles when the sidebar is too narrow.
+- Filter details by property presence or property value.
+- Use note name, file path, property, date, and time placeholders in custom text.
+- Keep all note content and properties unchanged.
 
-本插件：
+## Privacy
 
-- 不发送网络请求。
-- 不收集使用数据。
-- 不包含广告。
-- 不要求注册账号。
-- 不读取库外文件。
-- 不会修改笔记正文。
-- 不会写入 YAML、Properties 或 frontmatter。
-- 不会向其他服务上传笔记内容或笔记属性。
+Explorer Details does not send network requests, collect telemetry, display advertisements, or require an account.
 
-插件仅在当前 Obsidian 库内读取文件修改时间和已有的笔记属性，用于在文件列表中显示内容。
+The plugin only reads existing file metadata and note properties from the current vault. It does not modify note content, frontmatter, or Properties.
 
-## 安装方法
+## Installation
 
-### 在 Obsidian 社区插件中安装
+### Community Plugins
 
-社区插件审核通过后，可以按以下步骤安装：
+After the plugin is available in the Community Plugins directory:
 
-1. 打开 Obsidian 设置。
-2. 进入“第三方插件”。
-3. 搜索“文件列表备注”。
-4. 点击“安装”。
-5. 安装完成后开启插件。
+1. Open Settings.
+2. Open Community plugins.
+3. Search for Explorer Details.
+4. Select Install.
+5. Enable the plugin after installation.
 
-### 手动安装
+### Manual Installation
 
-1. 从本仓库的 Releases 页面下载最新版中的以下三个文件：
+1. Open the latest release on the GitHub Releases page.
+2. Download these three files:
 
    ```text
    main.js
@@ -55,155 +47,117 @@
    styles.css
    ```
 
-2. 在 Obsidian 库中创建插件目录：
+3. Create this folder inside the vault:
 
    ```text
    .obsidian/plugins/file-list-details
    ```
 
-3. 将下载的三个文件直接放入该目录。
-4. 重启 Obsidian，或在“第三方插件”页面重新加载插件。
-5. 在“设置 > 第三方插件”中开启“文件列表备注”。
+4. Put the three downloaded files directly into that folder.
+5. Restart the application, or reload community plugins.
+6. Enable Explorer Details in Settings > Community plugins.
 
-## 使用方法
+## Usage
 
-安装并启用后，打开：
+Open Settings > Explorer Details.
 
-```text
-设置 > 文件列表备注
-```
+### Show Modification Time
 
-### 显示修改时间
-
-选择：
+Choose:
 
 ```text
-显示内容：文件修改时间
-显示位置：自动判断
+Display content: File modification time
+Display position: Automatic
 ```
 
-当文件列表有足够宽度时，时间显示在标题右侧。空间不足或笔记标题较长时，时间会显示在标题下方。
+The time appears on the right when enough space is available. It moves below the note title when the file list is narrow or the note title is long.
 
-### 显示笔记属性
+### Show a Note Property
 
-假设笔记顶部有以下属性：
+For a note with this property:
 
 ```yaml
 ---
-status: 进行中
+status: In progress
 ---
 ```
 
-在插件设置中选择：
+Choose:
 
 ```text
-显示内容：笔记属性值
-属性名称：status
+Display content: Note property value
+Property name: status
 ```
 
-文件列表中将显示：
+The file list displays:
 
 ```text
-进行中
+In progress
 ```
 
-### 同时显示时间和属性
+### Show Time and Property Together
 
-选择：
+Choose:
 
 ```text
-显示内容：修改时间 + 笔记属性值
-属性名称：status
-显示位置：永远显示在标题下方
+Display content: Modification time + note property value
+Property name: status
+Display position: Always below the title
 ```
 
-文件列表效果类似：
+Example result:
 
 ```text
-项目计划
-10-13 20:45 · 进行中
+Project plan
+10-13 20:45 · In progress
 ```
 
-### 自定义显示文字
+### Use Custom Text
 
-选择“自定义文字”后，可以填写固定文字，也可以使用变量。
-
-例如填写：
+Choose Custom text and enter a template such as:
 
 ```text
-状态：{property}
+Status: {property}
 ```
 
-当笔记中有：
+Available placeholders:
 
-```yaml
----
-status: 已完成
----
-```
-
-文件列表将显示：
-
-```text
-状态：已完成
-```
-
-支持的变量：
-
-| 变量 | 显示内容 |
+| Placeholder | Result |
 | --- | --- |
-| `{name}` | 笔记名称，不含 `.md` 后缀 |
-| `{path}` | 笔记在库中的路径 |
-| `{property}` | 指定属性名称对应的属性值 |
-| `{date}` | 文件修改日期 |
-| `{time}` | 文件修改时间 |
+| `{name}` | Note name without the `.md` extension |
+| `{path}` | File path inside the vault |
+| `{property}` | Value of the configured property |
+| `{date}` | File modification date |
+| `{time}` | File modification time |
 
-示例：
+Example template:
 
 ```text
 {name} · {date} {time}
 ```
 
-### 按条件显示
+### Filter Notes
 
-可以设置只对部分笔记显示备注。
+Use Display condition to limit details to matching notes.
 
-例如，仅对 `status` 属性值为“进行中”的笔记显示内容：
+For example, to show details only for notes where `status` is `In progress`:
 
 ```text
-显示条件：属性值等于指定文字的笔记
-条件属性名称：status
-条件属性值：进行中
+Display condition: Property value equals specified text
+Condition property name: status
+Condition property value: In progress
 ```
 
-对应的笔记属性示例：
+## Compatibility
 
-```yaml
----
-status: 进行中
----
-```
+- Tested with version 1.13.7.
+- The plugin uses the native File Explorer structure.
+- Future application updates may require compatibility updates if the internal file list structure changes.
 
-## 兼容性
+## Support
 
-- 已使用 Obsidian 1.13.7 测试。
-- 本插件依赖 Obsidian 原生文件列表的内部 DOM 结构。
-- 若 Obsidian 后续更改文件列表结构，插件可能需要更新以保持兼容。
+Please open a GitHub issue with the application version, plugin version, current settings, and steps to reproduce the problem.
 
-## 反馈与问题报告
+## License
 
-如遇到问题，请在本仓库的 Issues 页面提交反馈。
-
-提交问题时，建议说明：
-
-- Obsidian 版本。
-- 操作系统。
-- 插件版本。
-- 当前插件设置。
-- 问题出现的具体步骤。
-- 控制台报错内容，如有。
-- 是否与其他文件列表相关插件同时使用。
-
-## 开源协议
-
-本项目使用 MIT License 开源。
+This project is released under the MIT License.
