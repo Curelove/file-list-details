@@ -4,7 +4,7 @@
   "version": "1.0.0",
   "minAppVersion": "1.13.0",
   "description": "在 Obsidian 原生文件列表中显示修改时间、笔记属性和自定义备注。",
-  "author": "苦惹爱",
+  "author": "Curelove",
   "authorUrl": "https://github.com/Curelove",
   "isDesktopOnly": false
 }
