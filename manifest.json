@@ -1,10 +1,10 @@
 {
   "id": "file-list-details",
   "name": "Explorer Details",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "minAppVersion": "1.13.0",
-  "description": "在 Obsidian 原生文件列表中显示修改时间、笔记属性和自定义备注。",
-  "author": "苦惹爱",
-  "authorUrl": "https://github.com/Curelove",
+  "description": "Show modification times, note properties, and custom details in the native File Explorer.",
+  "author": "Curelove",
+  "authorUrl": "https://github.com/curelove",
   "isDesktopOnly": false
 }
