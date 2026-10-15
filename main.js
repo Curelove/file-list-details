@@ -150,6 +150,9 @@ module.exports = class FileListDetailsPlugin extends Plugin {
         );
 
         this.refreshTimer = null;
+        this.rowCache = new WeakMap();
+
+        this.ensureMeasureElements();
 
         this.registerEvent(
             this.app.vault.on("modify", () => this.scheduleRefresh())
@@ -169,6 +172,13 @@ module.exports = class FileListDetailsPlugin extends Plugin {
 
         this.registerEvent(
             this.app.workspace.on("layout-change", () => this.scheduleRefresh())
+        );
+
+        this.registerEvent(
+            this.app.workspace.on("css-change", () => {
+                this.rowCache = new WeakMap();
+                this.scheduleRefresh();
+            })
         );
 
         this.rowResizeObserver = new ResizeObserver((entries) => {
@@ -212,6 +222,15 @@ module.exports = class FileListDetailsPlugin extends Plugin {
             window.clearTimeout(this.refreshTimer);
             this.refreshTimer = null;
         }
+
+        if (this.measureContainer) {
+            this.measureContainer.remove();
+            this.measureContainer = null;
+            this.measureTitleEl = null;
+            this.measureValueEl = null;
+        }
+
+        this.rowCache = new WeakMap();
 
         document
             .querySelectorAll("." + VALUE_CLASS)
@@ -361,10 +380,7 @@ module.exports = class FileListDetailsPlugin extends Plugin {
         );
 
         this.applyPosition(row);
-
-        window.requestAnimationFrame(() => {
-            this.updateRowLayout(row);
-        });
+        this.updateRowLayout(row);
     }
 
     removeValue(row) {
@@ -379,13 +395,44 @@ module.exports = class FileListDetailsPlugin extends Plugin {
     }
 
     applyPosition(row) {
-        const shouldShowBelow = this.settings.position === "below";
-
-        if (
-            row.classList.contains(BELOW_CLASS) !== shouldShowBelow
-        ) {
-            row.classList.toggle(BELOW_CLASS, shouldShowBelow);
+        if (this.settings.position === "below") {
+            row.classList.add(BELOW_CLASS);
+        } else if (this.settings.position === "right") {
+            row.classList.remove(BELOW_CLASS);
         }
+    }
+
+    ensureMeasureElements() {
+        if (this.measureContainer && this.measureContainer.isConnected) {
+            return;
+        }
+
+        this.measureContainer = document.createElement("div");
+        this.measureContainer.className =
+            "tree-item-self nav-file-title file-list-details--measure";
+        this.measureContainer.style.cssText =
+            "position: fixed; left: -9999px; top: -9999px; visibility: hidden; pointer-events: none; width: max-content; max-width: none;";
+
+        this.measureTitleEl = document.createElement("div");
+        this.measureTitleEl.className =
+            "tree-item-inner nav-file-title-content";
+        this.measureTitleEl.style.cssText =
+            "width: max-content; max-width: none; flex: none;";
+        this.measureContainer.appendChild(this.measureTitleEl);
+
+        this.measureValueEl = document.createElement("span");
+        this.measureValueEl.className = VALUE_CLASS;
+        this.measureValueEl.style.cssText =
+            "width: max-content; max-width: none; flex: none;";
+        this.measureContainer.appendChild(this.measureValueEl);
+
+        document.body.appendChild(this.measureContainer);
+    }
+
+    measureText(text, el) {
+        this.ensureMeasureElements();
+        el.textContent = text;
+        return el.getBoundingClientRect().width;
     }
 
     updateRowLayout(row) {
@@ -423,47 +470,66 @@ module.exports = class FileListDetailsPlugin extends Plugin {
             return;
         }
 
+        const computed = window.getComputedStyle(row);
+        const paddingLeft = parseFloat(computed.paddingLeft) || 0;
+        const paddingRight = parseFloat(computed.paddingRight) || 0;
         const rowWidth = row.getBoundingClientRect().width;
+        const availableWidth = rowWidth - paddingLeft - paddingRight;
 
-        if (rowWidth <= 0) {
+        if (availableWidth <= 0) {
             return;
         }
 
-        const titleWidth = this.getNaturalTitleWidth(titleElement);
-        const valueWidth = valueElement.getBoundingClientRect().width;
-        const requiredWidth = titleWidth + valueWidth + 28;
-        const shouldShowBelow = requiredWidth > rowWidth;
+        if (!this.rowCache) {
+            this.rowCache = new WeakMap();
+        }
 
-        if (
-            row.classList.contains(BELOW_CLASS) !== shouldShowBelow
-        ) {
+        let cache = this.rowCache.get(row);
+        if (!cache) {
+            cache = {};
+            this.rowCache.set(row, cache);
+        }
+
+        const titleText = titleElement.textContent || "";
+        if (cache.titleText !== titleText) {
+            cache.titleText = titleText;
+            cache.titleWidth = this.measureText(
+                titleText,
+                this.measureTitleEl
+            );
+        }
+
+        const valText = valueElement.textContent || "";
+        if (cache.valText !== valText) {
+            cache.valText = valText;
+            cache.valWidth =
+                this.measureText(valText, this.measureValueEl) + 8;
+        }
+
+        const tagEl = row.querySelector(".nav-file-tag");
+        const tagWidth = tagEl ? tagEl.getBoundingClientRect().width : 0;
+
+        const GAP = 10;
+        const requiredWidth =
+            cache.titleWidth + cache.valWidth + tagWidth + GAP;
+        const isCurrentlyBelow = row.classList.contains(BELOW_CLASS);
+        const HYSTERESIS = 12;
+
+        let shouldShowBelow;
+        if (isCurrentlyBelow) {
+            shouldShowBelow = availableWidth < requiredWidth + HYSTERESIS;
+        } else {
+            shouldShowBelow = availableWidth < requiredWidth;
+        }
+
+        if (isCurrentlyBelow !== shouldShowBelow) {
             row.classList.toggle(BELOW_CLASS, shouldShowBelow);
         }
     }
 
     getNaturalTitleWidth(titleElement) {
-        const clone = titleElement.cloneNode(true);
-
-        clone.style.position = "fixed";
-        clone.style.left = "-10000px";
-        clone.style.top = "-10000px";
-        clone.style.visibility = "hidden";
-        clone.style.pointerEvents = "none";
-        clone.style.width = "max-content";
-        clone.style.maxWidth = "none";
-        clone.style.minWidth = "max-content";
-        clone.style.overflow = "visible";
-        clone.style.textOverflow = "clip";
-        clone.style.whiteSpace = "nowrap";
-        clone.style.flex = "none";
-
-        document.body.appendChild(clone);
-
-        const width = clone.getBoundingClientRect().width;
-
-        clone.remove();
-
-        return width;
+        const text = titleElement ? titleElement.textContent || "" : "";
+        return this.measureText(text, this.measureTitleEl);
     }
 
     getDisplayText(file) {

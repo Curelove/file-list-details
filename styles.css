@@ -23,6 +23,19 @@
     pointer-events: none;
 }
 
+.file-list-details--measure {
+    position: fixed !important;
+    left: -9999px !important;
+    top: -9999px !important;
+    visibility: hidden !important;
+    pointer-events: none !important;
+    width: max-content !important;
+    max-width: none !important;
+    min-width: max-content !important;
+    opacity: 0 !important;
+    z-index: -9999 !important;
+}
+
 .nav-file-title.file-list-details--below {
     flex-wrap: wrap;
     align-items: flex-start;
