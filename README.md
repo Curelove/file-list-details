@@ -6,7 +6,7 @@
 [English](#features) | [中文说明](#中文说明)
 
 <!-- Drag and drop your screenshot or 5-second demo GIF of the File Explorer right below in the GitHub web editor -->
-![Explorer Details Demo](请在此处拖拽上传Obsidian左侧文件列表显示修改时间与属性备注的特写截图或GIF.gif)
+<img width="592" height="285" alt="PixPin_2026-10-31_04-57-07" src="https://github.com/user-attachments/assets/47f19dff-c85d-4400-86b9-f6e333363557" />
 
 ---
 
