@@ -1,103 +1,68 @@
-# Explorer Details
+# Explorer Details (文件列表备注)
 
-Explorer Details adds useful metadata to notes in the native File Explorer.
+> **See modification times, note properties, and custom labels right inside Obsidian's native File Explorer—without replacing your file tree.**  
+> **在不替换 Obsidian 原生文件列表的前提下，直接在笔记旁展示修改时间、YAML 属性值与自定义备注。**
 
-It can show file modification times, note property values, custom text, or a combination of time and property values. The plugin enhances the existing file list and does not create a replacement file browser.
+[English](#features) | [中文说明](#中文说明)
 
-Chinese name: 文件列表备注
+<!-- Drag and drop your screenshot or 5-second demo GIF of the File Explorer right below in the GitHub web editor -->
+![Explorer Details Demo](请在此处拖拽上传Obsidian左侧文件列表显示修改时间与属性备注的特写截图或GIF.gif)
+
+---
 
 ## Features
 
-- Show the file modification time for each note.
-- Show the value of a note property.
-- Show custom text or a reusable note label.
-- Show modification time and a property value together.
-- Place details automatically, always on the right, or always below the note title.
-- Move details below long note titles when the sidebar is too narrow.
-- Filter details by property presence or property value.
-- Use note name, file path, property, date, and time placeholders in custom text.
-- Keep all note content and properties unchanged.
+- **Native & Non-Intrusive**: Enhances Obsidian's built-in File Explorer directly without replacing your familiar file browser or modifying any note content.
+- **Flexible Metadata Display**:
+  - Show **file modification time** for each note.
+  - Show any **YAML note property value** (e.g., `status`, `Summary`, `author`).
+  - Show **modification time + property value** together (e.g., `10-13 20:45 · In progress`).
+  - Define **custom text templates** using placeholders: `{name}`, `{path}`, `{property}`, `{date}`, and `{time}`.
+- **Smart Responsive Layout**: Place details automatically on the right when space permits, or automatically wrap them neatly below long note titles when the sidebar is narrow.
+- **Conditional Filtering**: Only display details on notes that match specific property conditions (e.g., only show when `status` equals `In progress`).
+- **100% Local & Private**: Zero network requests, zero telemetry, and never alters your Frontmatter or Markdown files.
 
-## Privacy
-
-Explorer Details does not send network requests, collect telemetry, display advertisements, or require an account.
-
-The plugin only reads existing file metadata and note properties from the current vault. It does not modify note content, frontmatter, or Properties.
+---
 
 ## Installation
 
-### Community Plugins
+### Option 1: Obsidian Community Plugins
 
-After the plugin is available in the Community Plugins directory:
+1. Open **Settings -> Community plugins** in Obsidian.
+2. Search for **Explorer Details**.
+3. Click **Install** and **Enable**.
 
-1. Open Settings.
-2. Open Community plugins.
-3. Search for Explorer Details.
-4. Select Install.
-5. Enable the plugin after installation.
+### Option 2: Using BRAT
 
-### Manual Installation
-
-1. Open the latest release on the GitHub Releases page.
-2. Download these three files:
-
-   ```text
-   main.js
-   manifest.json
-   styles.css
-   ```
-
-3. Create this folder inside the vault:
-
-   ```text
-   .obsidian/plugins/file-list-details
-   ```
-
-4. Put the three downloaded files directly into that folder.
-5. Restart the application, or reload community plugins.
-6. Enable Explorer Details in Settings > Community plugins.
-
-## Usage
-
-Open Settings > Explorer Details.
-
-### Show Modification Time
-
-Choose:
+1. Install and enable the **BRAT** plugin.
+2. Click **Add Beta plugin** and enter:
 
 ```text
-Display content: File modification time
-Display position: Automatic
+https://github.com/Curelove/file-list-details
 ```
 
-The time appears on the right when enough space is available. It moves below the note title when the file list is narrow or the note title is long.
+3. Enable **Explorer Details** in Community plugins.
 
-### Show a Note Property
+### Option 3: Manual Installation
 
-For a note with this property:
+1. Download `main.js`, `manifest.json`, and `styles.css` from the [Latest Release](https://github.com/Curelove/file-list-details/releases).
+2. Place them into the following folder inside your vault:
 
-```yaml
+```text
+.obsidian/plugins/file-list-details/
+```
+
+3. Reload Obsidian and enable **Explorer Details** in Settings -> Community plugins.
+
 ---
-status: In progress
----
-```
 
-Choose:
+## Quick Usage Examples
 
-```text
-Display content: Note property value
-Property name: status
-```
+Open **Settings -> Explorer Details** to configure how metadata appears:
 
-The file list displays:
+### 1. Show Time and Property Together
 
-```text
-In progress
-```
-
-### Show Time and Property Together
-
-Choose:
+Configure the following options:
 
 ```text
 Display content: Modification time + note property value
@@ -105,42 +70,26 @@ Property name: status
 Display position: Always below the title
 ```
 
-Example result:
+Example output in File Explorer:
 
 ```text
 Project plan
 10-13 20:45 · In progress
 ```
 
-### Use Custom Text
+### 2. Custom Template Placeholders
 
-Choose Custom text and enter a template such as:
+Choose `Custom text` and enter a template such as `Status: {property}` or `{name} · {date} {time}`. Supported placeholders:
 
-```text
-Status: {property}
-```
+- `{name}`: Note name without the `.md` extension
+- `{path}`: File path inside the vault
+- `{property}`: Value of the configured YAML property
+- `{date}`: File modification date
+- `{time}`: File modification time
 
-Available placeholders:
+### 3. Filter Notes by Property
 
-| Placeholder | Result |
-| --- | --- |
-| `{name}` | Note name without the `.md` extension |
-| `{path}` | File path inside the vault |
-| `{property}` | Value of the configured property |
-| `{date}` | File modification date |
-| `{time}` | File modification time |
-
-Example template:
-
-```text
-{name} · {date} {time}
-```
-
-### Filter Notes
-
-Use Display condition to limit details to matching notes.
-
-For example, to show details only for notes where `status` is `In progress`:
+Use `Display condition` to show badges only on matching notes:
 
 ```text
 Display condition: Property value equals specified text
@@ -148,16 +97,22 @@ Condition property name: status
 Condition property value: In progress
 ```
 
-## Compatibility
+---
 
-- Tested with version 1.13.7.
-- The plugin uses the native File Explorer structure.
-- Future application updates may require compatibility updates if the internal file list structure changes.
+## 中文说明
 
-## Support
+**Explorer Details（文件列表备注）** 是一款轻量、无侵入的 Obsidian 原生文件列表增强插件。它不需要你改变原有的文件夹使用习惯，直接在左侧原生文件树中为每篇笔记挂上直观的「状态副标题」。
 
-Please open a GitHub issue with the application version, plugin version, current settings, and steps to reproduce the problem.
+### 核心亮点
 
-## License
+- **四种显示模式**：支持单显「文件修改时间」、单显「指定笔记属性（Properties）」、组合显示「时间 + 属性值」，或使用 `{name}`、`{path}`、`{property}`、`{date}`、`{time}` 占位符拼接自定义模板。
+- **自适应防挤压排版**：侧边栏宽敞时优雅右对齐；当侧边栏收窄或笔记标题过长时，自动切换至标题正下方显示，绝不挤乱文件树。
+- **按条件精准展示**：支持设置过滤条件（例如仅当笔记包含某属性，或 `status` 等于 `进行中` 时才显示备注），保持文件树干净清爽。
+- **绝对安全**：仅只读读取当前仓库的元数据与属性，绝不修改任何笔记正文或 YAML 属性，无任何网络请求。
 
-This project is released under the MIT License.
+---
+
+## Compatibility & License
+
+- Tested with Obsidian `1.13.7+`.
+- Released under the [MIT License](LICENSE). If you encounter any issues, please open a [GitHub Issue](https://github.com/Curelove/file-list-details/issues).
